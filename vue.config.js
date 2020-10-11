@@ -55,6 +55,16 @@ module.exports = {
     hot: true, // 开启热加载
     hotOnly: false,
     proxy: null, // 设置代理
+    proxy: {
+      '/devApi': {
+          target: 'http://www.web-jshtml.cn/productapi',   // 此处的写法，目的是为了 将 /api 替换成 http://www.web-jshtml.cn/productapi
+          // 允许跨域
+          changeOrigin: true,
+          pathRewrite: {
+              '^/devApi': ''
+          }
+      }
+  },
     // proxy: {
     //   '/devApi':{
     //     target: "http://www.web-jshtml.cn/productapi", //API 服务器地址 
