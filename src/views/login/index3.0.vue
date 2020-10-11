@@ -9,8 +9,8 @@
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"  class="login-form" size="medium ">
         
         <el-form-item  prop="username" class="item-form">
-          <label for="username">邮箱</label>
-          <el-input type="text" id="username" v-model="ruleForm.username" autocomplete="off"></el-input>
+          <label>邮箱</label>
+          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item  prop="password" class="item-form">
@@ -27,12 +27,12 @@
           <label>验证码</label>
           <el-row :gutter="11">
             <el-col :span="16"><el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input></el-col>
-            <el-col :span="8"><el-button type="success" class="block" @click="getSms()">获取验证码</el-button></el-col>
+            <el-col :span="8"><el-button type="success" class="block">获取验证码</el-button></el-col>
           </el-row>
           
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block" :disabled ="loginButtonStatus">{{model === 'login' ? "登录" : "注册"}}</el-button>
+          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block">提交</el-button>
         </el-form-item>
       </el-form>
 
@@ -41,15 +41,13 @@
 </template>
 
 <script>
-// import service from "@/utils/request.js"   ,   import后面的service没用{}是因为 request.js文件中的service是默认defalut的
-import { GetSms} from "@/api/login.js"
 import { reactive,ref, isRef, toRefs, onMounted} from '@vue/composition-api'
-import {stripscript,validateEmail,validatePasswrd,validateVCode } from '@/utils/validate.js';   //validate.js中没有defalut，所以用{}来引用多个
+import {stripscript,validateEmail,validatePasswrd,validateVCode } from '@/utils/validate.js';
 export default {
     name:'login',
     
-    //setup(props,context)
-    setup(props, {refs ,root }){
+    //若为setup(props,context) 这样要变成context.refs
+    setup(props, {refs }){
 
       //验证用户名为邮箱
       let validateUsername = (rule, value, callback) => {
@@ -99,16 +97,13 @@ export default {
         }
       };
       //放置data数据，生命周期，自定义函数
-      const menuTab =reactive([
+      const menuTab =reactive([                                //声明单一变量用reactivr
           { txt:'登录',current: true, type: 'login'},
           { txt:'注册',current: false, type: 'register'}
         ])
 
       //模块值
-        const model= ref('login')
-
-      //登录按钮禁用状态
-      const loginButtonStatus = ref(true);
+        const model= ref('login')                              //声明基础类型变量用ref
 
       //表单的数据
       const ruleForm = reactive ({
@@ -148,31 +143,6 @@ export default {
         //修改模块值
         model.value = data.type
       })
-
-      //获取验证码
-      const getSms =(() => {
-        //进行提示
-        if(ruleForm.username === ""){
-          root.$message.error('邮箱不能为空！！');
-          return false
-        }
-        if(validateEmail(ruleForm.username)) {
-          root.$message.error('邮箱格式有误，请重新输入！！');
-          return false
-        }
-
-        //请求的接口 获取验证码
-        let requestData ={
-          username: ruleForm.username,
-          module:'login'
-        }
-        GetSms(requestData).then(response =>{   //接收拦截器中response的信息
-            console.log(response)
-        }).catch(error =>{                                          //接收拦截器中reject(error)的信息
-            console.log(error)
-        })
-      })
-      //提交表单
       const submitForm = (formName => {
         refs[formName].validate((valid) => {
           if (valid) {
@@ -185,20 +155,17 @@ export default {
       })
 
       //生命周期 
-
       //挂载完成后执行：
       onMounted(() => {
-        GetSms()
+
       })
       return {
         menuTab,
         model,
-        loginButtonStatus,
         ruleForm,
         rules,
         toggleMenu,
-        submitForm,
-        getSms,
+        submitForm
       }
     },
 

@@ -37,3 +37,7 @@ export function validateVCode(value) {
         return false;
     }
 }
+
+/**
+ * 没有使用defalut 时， 需要{}来引用，可以同时声明多个export
+ */
