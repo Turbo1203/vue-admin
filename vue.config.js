@@ -9,12 +9,25 @@ module.exports = {
   /**
    * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
    **/
+
+  //svg，在终端依赖svg-sprite-loader，为了处理icon图标。
   chainWebpack: (config) => {
+    const svgRule = config.module.rule("svg");
+    svgRule.uses.clear();
+    svgRule
+    .use("svg-sprite-loader")
+    .loader("svg-sprite-loader")
+    .options({
+      symbolId: "icon-[name]",
+      include: ["./src/icons"]
+    });
   },
+
   configureWebpack: (config) => {
     config.resolve = { // 配置解析别名
       extensions: ['.js', '.json', '.vue'],//webpcak 自动添加文件名后缀
       alias: {
+        'vue' : 'vue/dist/vue.js',
         '@': path.resolve(__dirname, './src'),
         'public': path.resolve(__dirname, './public'),
         '@c': path.resolve(__dirname, './src/components'),
@@ -55,26 +68,26 @@ module.exports = {
     hot: true, // 开启热加载
     hotOnly: false,
     proxy: null, // 设置代理
-    proxy: {
-      '/devApi': {
-          target: 'http://www.web-jshtml.cn/productapi',   // 此处的写法，目的是为了 将 /api 替换成 http://www.web-jshtml.cn/productapi
+    /* proxy: {
+      '/vue_admin_api': {
+          target: 'http://www.web-jshtml.cn/vue_admin_api/token',   // 此处的写法，目的是为了 将 /api 替换成 http://www.web-jshtml.cn/productapi
           // 允许跨域
           changeOrigin: true,
           pathRewrite: {
-              '^/devApi': ''
+              '^/vue_admin_api': ''
           }
       }
-  },
-    // proxy: {
-    //   '/devApi':{
-    //     target: "http://www.web-jshtml.cn/productapi", //API 服务器地址 
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/devApi':''
-    //     }
+    }, */
+     proxy: {
+       '/devApi':{
+         target: "http://www.web-jshtml.cn/productapi/token", //API 服务器地址 
+         changeOrigin: true,
+         pathRewrite: {
+           '^/devApi':''
+         }
         
-    //   }
-    // },
+       }
+     },
     overlay: { // 全屏模式下是否显示脚本错误
       warnings: true,
       errors: true

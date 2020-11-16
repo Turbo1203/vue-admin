@@ -3,25 +3,35 @@
 
 import axios from 'axios'
 import { Message } from 'element-ui';
+import { getToken, getUserName} from "@/utils/app"
 
 //手把手撸码前端API，地址 http://www.web-jshtml.cn/productapi
 //创建axios，赋给service
-const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/devApi';
+const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/devApi'; //'/vue_admin_api';   
 const service = axios.create({
     baseURL: BASEURL,    //http://10.207.126.98:8080/devApi/   == vue.config.js里的http://www.web-jshtml.cn/productapi
-    timeout: 1000,
+    timeout: 15000,
 });
 
 //添加请求拦截器
 service.interceptors.request.use(function(config) {
     //在发送请求前做些什么
+    //后台需要前端传递的参数（在请求头添加参数）
+    //Tokey
+    //userId
+    //sui
+    //业务需求
+
+    config.headers['Tokey'] = getToken();
+    config.headers['UserName'] = getUserName();
     return config;
 },function (error) {
     //对请求错误做些什么
     return Promise.reject(error);
 });
 
-//添加响应拦截器
+//请求接口，返回数据进行拦截(响应拦截器 )
+
 service.interceptors.response.use(function (response) {
     //对响应数据做些什么
     let data =response.data
