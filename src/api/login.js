@@ -12,6 +12,20 @@ export function GetSms(data){
 
 //获取用户角色
 
-//登录
+//登录接口
+export function Login(data){
+    return service.request({
+        method : 'post',
+        url : '/login/',
+        data
+    })
+}
 
-//注册
+//注册接口
+export function Register(data){
+    return service.request({
+        method:"post",
+        url:"/register/",
+        data
+    })
+}
